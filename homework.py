@@ -1,18 +1,15 @@
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
-    def __init__(self,
-                training_type: str,
-                duration: int,
-                distance: float,
-                speed: float,
-                calories) -> None:
+    def __init__(self, training_type: str, duration: int,
+                distance: float, speed: float, calories) -> None:
 
         self.training_type = training_type
         self.duration = duration
         self.distance = distance
         self.speed = speed
         self.calories = calories
+
 
     def get_message(self):
         return (f'Тип тренировки: {self.training_type}; '
@@ -29,11 +26,7 @@ class Training:
     M_IN_KM: int = 1000
 
 
-    def __init__(self,
-                 action: int,
-                 duration: int,
-                 weight: float,
-                 ) -> None:
+    def __init__(self, action: int, duration: int, weight: float) -> None:
         self.action = action
         self.duration = duration
         self.weight = weight
@@ -126,7 +119,7 @@ def read_package(workout_type: str, data: list) -> Training:
         weight_user = data[2]
         run = Running(count_step, duration_training, weight_user)
         return run
-    elif workout_type == "WLK":
+    elif workout_type == 'WLK':
         count_step = data[0]
         duration_training = data[1]
         weight_user = data[2]
@@ -135,10 +128,12 @@ def read_package(workout_type: str, data: list) -> Training:
                              weight_user, heigth_user)
         return walk
 
+
 def main(training: Training) -> None:
     """Главная функция."""
     info = training.show_training_info()
     print(info.get_message())
+
 
 def run():
     packages = [
