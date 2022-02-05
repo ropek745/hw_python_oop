@@ -135,7 +135,7 @@ def read_package(workout_type: str, data: Sequence) -> Training:
         'RUN': [Running, len(fields(Running))],
         'WLK': [SportsWalking, len(fields(SportsWalking))]
     }
-    
+
     if workout_type not in workout_info:
         raise KeyError('Тренировки нет в списке.')
     if workout_info[workout_type][1] != len(data):
@@ -150,9 +150,9 @@ def main(training: Training) -> None:
 
 if __name__ == '__main__':
     packages = [
-            ('SWM', [720, 1, 80, 25, 40]),
-            ('RUN', [15000, 1, 75]),
-            ('WLK', [9000, 1, 75, 180]),
+        ('SWM', [720, 1, 80, 25, 40]),
+        ('RUN', [15000, 1, 75]),
+        ('WLK', [9000, 1, 75, 180]),
     ]
 
     for workout_type, data in packages:
