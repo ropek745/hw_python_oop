@@ -65,7 +65,7 @@ class Training:
             self.get_distance(),
             self.get_mean_speed(),
             self.get_spent_calories()
-            )
+        )
         return message
 
 
@@ -135,17 +135,18 @@ def read_package(workout_type: str, data: Sequence) -> Training:
         'RUN': [Running, len(fields(Running))],
         'WLK': [SportsWalking, len(fields(SportsWalking))]
     }
-    for part in workout_info.values():
-        if workout_type not in workout_info:
-            raise KeyError('Тренировки нет в списке.')
-        if workout_info[workout_type][1] != len(data):
-            raise ValueError('Не соответствие набора элементов.')
-        return workout_info[workout_type][0](*data)
+    
+    if workout_type not in workout_info:
+        raise KeyError('Тренировки нет в списке.')
+    if workout_info[workout_type][1] != len(data):
+        raise ValueError('Не соответствие набора элементов.')
+    return workout_info[workout_type][0](*data)
 
 
 def main(training: Training) -> None:
     """Главная функция."""
     print(training.show_training_info().get_message())
+
 
 if __name__ == '__main__':
     packages = [
