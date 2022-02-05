@@ -19,7 +19,7 @@ class InfoMessage:
         'Ср. скорость: {speed:.3f} км/ч; '
         'Потрачено ккал: {calories:.3f}.'
     )
-    
+
     def get_message(self) -> str:
         data_1 = self.training_type
         data_2 = self.duration
@@ -60,13 +60,14 @@ class Training:
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
         message = InfoMessage(
-            self.__class__.__name__, 
+            self.__class__.__name__,
             self.duration,
             self.get_distance(),
             self.get_mean_speed(),
             self.get_spent_calories()
             )
         return message
+
 
 @dataclass
 class Running(Training):
@@ -80,8 +81,9 @@ class Running(Training):
         speed = self.get_mean_speed()
         return ((self.SPEED_MULTIPLIER_1 * speed
                 - self.SPEED_MULTIPLIER_2)
-                * self.weight / self.M_IN_KM 
+                * self.weight / self.M_IN_KM
                 * self.duration * self.MINUTES)
+
 
 @dataclass
 class SportsWalking(Training):
@@ -98,9 +100,10 @@ class SportsWalking(Training):
     def get_spent_calories(self):
         speed = self.get_mean_speed()
         return ((self.SPEED_MULTIPLIER_1 * self.weight
-               + (speed**2 // self.height)
-               * self.SPEED_MULTIPLIER_2 * self.weight)
-               * self.duration * self.MINUTES)
+                + (speed**2 // self.height)
+                * self.SPEED_MULTIPLIER_2 * self.weight)
+                * self.duration * self.MINUTES)
+
 
 @dataclass
 class Swimming(Training):
@@ -131,7 +134,7 @@ def read_package(workout_type: str, data: Sequence) -> Training:
         'SWM': [Swimming, len(fields(Swimming))],
         'RUN': [Running, len(fields(Running))],
         'WLK': [SportsWalking, len(fields(SportsWalking))]
-}
+    }
     for part in workout_info.values():
         if workout_type not in workout_info:
             raise KeyError('Тренировки нет в списке.')
@@ -139,15 +142,16 @@ def read_package(workout_type: str, data: Sequence) -> Training:
             raise ValueError('Не соответствие набора элементов.')
         return workout_info[workout_type][0](*data)
 
+
 def main(training: Training) -> None:
     """Главная функция."""
     print(training.show_training_info().get_message())
 
 if __name__ == '__main__':
-    packages = [      
-        ('SWM', [720, 1, 80, 25, 40]),
-        ('RUN', [15000, 1, 75]),
-        ('WLK', [9000, 1, 75, 180]),
+    packages = [
+            ('SWM', [720, 1, 80, 25, 40]),
+            ('RUN', [15000, 1, 75]),
+            ('WLK', [9000, 1, 75, 180]),
     ]
 
     for workout_type, data in packages:
