@@ -5,20 +5,21 @@ from typing import Sequence
 @dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
-    
-    training_type: str 
+
+    training_type: str
     duration: float
     distance: float
     speed: float
     calories: float
 
     PHRASE = (
-        'Тип тренировки: {training_type}; ' 
+        'Тип тренировки: {training_type}; '
         'Длительность: {duration:.3f} ч.; '
         'Дистанция: {distance:.3f} км; '
         'Ср. скорость: {speed:.3f} км/ч; '
         'Потрачено ккал: {calories:.3f}.'
-        )
+    )
+    
     def get_message(self) -> str:
         data_1 = self.training_type
         data_2 = self.duration
@@ -26,12 +27,13 @@ class InfoMessage:
         data_4 = self.speed
         data_5 = self.calories
         return self.PHRASE.format(
-            training_type=data_1, 
+            training_type=data_1,
             duration=data_2,
             distance=data_3,
             speed=data_4,
             calories=data_5
         )
+
 
 @dataclass
 class Training:
