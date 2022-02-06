@@ -2,7 +2,6 @@ from dataclasses import dataclass, fields, asdict
 from typing import Sequence
 
 
-
 TRAINING_ERROR = 'Тренировки {workout_type} нет в программе!'
 DATA_ERROR = (
     'Количество элементов {false_data}'
@@ -10,7 +9,6 @@ DATA_ERROR = (
     'Для {sport} нужно '
     '{true_data} элементов!'
 )
-
 
 
 @dataclass
@@ -41,7 +39,6 @@ class Training:
     LEN_STEP = 0.65
     M_IN_KM = 1000
     DURATION_MULTIPLIER = 60
-
 
     action: int
     duration: float
@@ -84,7 +81,7 @@ class Running(Training):
             (self.SPEED_MULTIPLIER * speed
             - self.SUBTRACTED_FROM_SPEED) * self.weight
             / self.M_IN_KM * self.duration * self.DURATION_MULTIPLIER
-            )
+        )
 
 
 @dataclass
@@ -128,7 +125,7 @@ WORKOUT_INFO = {
         'SWM': [Swimming, len(fields(Swimming))],
         'RUN': [Running, len(fields(Running))],
         'WLK': [SportsWalking, len(fields(SportsWalking))]
-    }
+}
 
 
 def read_package(workout_type: str, data: Sequence) -> Training:
@@ -138,11 +135,12 @@ def read_package(workout_type: str, data: Sequence) -> Training:
         raise ValueError(TRAINING_ERROR.format(workout_type))
     if WORKOUT_INFO[workout_type][1] != len(data):
         raise ValueError(DATA_ERROR.format(
-            false_data=len(data), 
+            false_data=len(data),
             sport=workout_type,
             true_data=WORKOUT_INFO[workout_type][1])
         )
     return WORKOUT_INFO[workout_type][0](*data)
+
 
 def main(training: Training) -> None:
     """Главная функция."""
