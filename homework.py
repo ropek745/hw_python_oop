@@ -1,5 +1,16 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, fields, asdict
 from typing import Sequence
+
+
+
+TRAINING_ERROR = 'Тренировки {workout_type} нет в программе!'
+DATA_ERROR = (
+    'Количество элементов {false_data}'
+    'не предусмотрено для {sport}}! '
+    'Для {sport} нужно '
+    '{true_data} элементов!'
+)
+
 
 
 @dataclass
@@ -21,18 +32,7 @@ class InfoMessage:
     )
 
     def get_message(self) -> str:
-        data_1 = self.training_type
-        data_2 = self.duration
-        data_3 = self.distance
-        data_4 = self.speed
-        data_5 = self.calories
-        return self.PHRASE.format(
-            training_type=data_1,
-            duration=data_2,
-            distance=data_3,
-            speed=data_4,
-            calories=data_5
-        )
+        return self.PHRASE.format(**asdict(self))
 
 
 @dataclass
@@ -40,6 +40,8 @@ class Training:
     """Базовый класс тренировки."""
     LEN_STEP = 0.65
     M_IN_KM = 1000
+    DURATION_MULTIPLIER = 60
+
 
     action: int
     duration: float
@@ -73,75 +75,74 @@ class Training:
 class Running(Training):
     """Тренировка: бег."""
 
-    SPEED_MULTIPLIER_1 = 18
-    SPEED_MULTIPLIER_2 = 20
-    MINUTES = 60
+    SPEED_MULTIPLIER = 18
+    SUBTRACTED_FROM_SPEED = 20
 
     def get_spent_calories(self):
         speed = self.get_mean_speed()
-        return ((self.SPEED_MULTIPLIER_1 * speed
-                - self.SPEED_MULTIPLIER_2)
-                * self.weight / self.M_IN_KM
-                * self.duration * self.MINUTES)
+        return (
+            (self.SPEED_MULTIPLIER * speed
+            - self.SUBTRACTED_FROM_SPEED) * self.weight
+            / self.M_IN_KM * self.duration * self.DURATION_MULTIPLIER
+            )
 
 
 @dataclass
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    SPEED_MULTIPLIER_1 = 0.035
-    SPEED_MULTIPLIER_2 = 0.029
-    MINUTES = 60
+    WEIGTH_MULTIPLIER_1 = 0.035
+    WEIGTH_MULTIPLIER_2 = 0.029
 
-    action: int
-    duration: float
-    weight: float
     height: float
 
     def get_spent_calories(self):
         speed = self.get_mean_speed()
-        return ((self.SPEED_MULTIPLIER_1 * self.weight
-                + (speed**2 // self.height)
-                * self.SPEED_MULTIPLIER_2 * self.weight)
-                * self.duration * self.MINUTES)
+        return (
+            (self.WEIGTH_MULTIPLIER_1 * self.weight
+            + (speed ** 2 // self.height)
+            * self.WEIGTH_MULTIPLIER_2 * self.weight)
+            * self.duration * self.DURATION_MULTIPLIER
+        )
 
 
 @dataclass
 class Swimming(Training):
     """Тренировка: плавание."""
     LEN_STEP = 1.38
-    CALORIES_MULTIPLIER = 2
-    CALORIES_SUMMATION = 1.1
+    SPEED_MULTIPLIER = 2
+    SPEED_SUMMATION = 1.1
 
-    action: int
-    duration: float
-    weight: float
     length_pool: float
-    count_pool: float
+    count_pool: int
 
     def get_mean_speed(self):
         return (self.length_pool * self.count_pool
                 / self.M_IN_KM / self.duration)
 
     def get_spent_calories(self):
-        return ((self.get_mean_speed() + self.CALORIES_SUMMATION)
-                * self.CALORIES_MULTIPLIER * self.weight)
+        return ((self.get_mean_speed() + self.SPEED_SUMMATION)
+                * self.SPEED_MULTIPLIER * self.weight)
 
 
-def read_package(workout_type: str, data: Sequence) -> Training:
-    """Прочитать данные полученные от датчиков."""
-
-    workout_info = {
+WORKOUT_INFO = {
         'SWM': [Swimming, len(fields(Swimming))],
         'RUN': [Running, len(fields(Running))],
         'WLK': [SportsWalking, len(fields(SportsWalking))]
     }
 
-    if workout_type not in workout_info:
-        raise KeyError('Тренировки нет в списке.')
-    if workout_info[workout_type][1] != len(data):
-        raise ValueError('Не соответствие набора элементов.')
-    return workout_info[workout_type][0](*data)
 
+def read_package(workout_type: str, data: Sequence) -> Training:
+    """Прочитать данные полученные от датчиков."""
+
+    if workout_type not in WORKOUT_INFO:
+        raise ValueError(TRAINING_ERROR.format(workout_type))
+    if WORKOUT_INFO[workout_type][1] != len(data):
+        raise ValueError(DATA_ERROR.format(
+            false_data=len(data), 
+            sport=workout_type,
+            true_data=WORKOUT_INFO[workout_type][1])
+        )
+    return WORKOUT_INFO[workout_type][0](*data)
 
 def main(training: Training) -> None:
     """Главная функция."""
