@@ -80,7 +80,7 @@ class Running(Training):
         return (
             (self.SPEED_MULTIPLIER * speed
              - self.SUBTRACTED_FROM_SPEED) * self.weight
-             / self.M_IN_KM * self.duration * self.DURATION_MULTIPLIER
+            / self.M_IN_KM * self.duration * self.DURATION_MULTIPLIER
         )
 
 
@@ -98,7 +98,7 @@ class SportsWalking(Training):
             (self.WEIGTH_MULTIPLIER_1 * self.weight
              + (speed ** 2 // self.height)
              * self.WEIGTH_MULTIPLIER_2 * self.weight)
-             * self.duration * self.DURATION_MULTIPLIER
+            * self.duration * self.DURATION_MULTIPLIER
         )
 
 
@@ -122,9 +122,9 @@ class Swimming(Training):
 
 
 WORKOUT_INFO = {
-         'SWM': [Swimming, len(fields(Swimming))],
-         'RUN': [Running, len(fields(Running))],
-         'WLK': [SportsWalking, len(fields(SportsWalking))]
+    'SWM': [Swimming, len(fields(Swimming))],
+    'RUN': [Running, len(fields(Running))],
+    'WLK': [SportsWalking, len(fields(SportsWalking))]
 }
 
 
